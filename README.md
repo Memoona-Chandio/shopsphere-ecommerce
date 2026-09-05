@@ -1,40 +1,45 @@
-# 🎮 RaMe RetroVerse
+# 🛒 ShopSphere - Smart E-Commerce Platform
 
-RaMe RetroVerse is a retro gaming website that brings together classic and nostalgic games in one simple and enjoyable platform.
+ShopSphere is a modern e-commerce website designed to provide a simple and interactive online shopping experience.
 
-Users can explore different retro games, search for their favorite game, and use the Play button to access the game.
+Users can explore products, search and filter items, save favorites, manage their shopping cart, and complete the checkout process.
 
 ## ✨ Features
 
-- Home, Games, and About pages
-- Collection of classic retro games
-- Search games by name
-- Play buttons for accessing games
-- Retro-inspired user interface
-- Responsive layout
-- Simple navigation
+- Product browsing
+- Product search
+- Category filtering
+- Product sorting
+- Shopping cart
+- Wishlist
+- Recently viewed products
+- Product details
+- Coupon functionality
+- Checkout system
+- Dark mode
+- LocalStorage support
+- Responsive design
 
 ## 🛠️ Technologies Used
 
 - HTML5
 - CSS3
 - JavaScript
+- LocalStorage
 
 ## 📁 Main Files
 
-- `index.html` - Home page
-- `game.html` - Games page
-- `about.html` - About page
-- `style.css` - Website styling
-- `script.js` - Game search functionality
+- `index.html` - Main e-commerce interface
+- `style.css` - Website design and responsive styling
+- `script.js` - Shopping functionality and interactions
 
 ## 🚀 How to Run
 
 1. Download or clone the repository.
 2. Open the project folder.
 3. Open `index.html` in your browser.
-4. Explore the website and games.
+4. Browse products and explore the shopping features.
 
 ## 🎯 Project Purpose
 
-The purpose of this project is to create a simple retro gaming platform while practicing frontend web development using HTML, CSS, and JavaScript.
+The purpose of ShopSphere is to practice frontend development by building an interactive e-commerce website with common online shopping features.
