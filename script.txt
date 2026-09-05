@@ -1,0 +1,1850 @@
+// =========================
+// PRODUCT DATA
+// =========================
+
+const products = [
+
+    {
+        id: 1,
+        name: "Nova Smart Watch",
+        category: "Electronics",
+        price: 129.99,
+        rating: 4.8,
+        badge: "Best Seller",
+        image:
+            "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80",
+
+        description:
+            "A stylish smart watch with fitness tracking, notifications, heart-rate monitoring and a premium modern design."
+    },
+
+    {
+        id: 2,
+        name: "Sonic Wireless Headphones",
+        category: "Electronics",
+        price: 89.99,
+        rating: 4.6,
+        badge: "Popular",
+        image:
+            "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80",
+
+        description:
+            "Comfortable wireless headphones with rich sound, soft ear cushions and long-lasting battery performance."
+    },
+
+    {
+        id: 3,
+        name: "Urban Classic Sneakers",
+        category: "Fashion",
+        price: 74.99,
+        rating: 4.7,
+        badge: "Trending",
+        image:
+            "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80",
+
+        description:
+            "Modern everyday sneakers designed for comfort, style and effortless casual looks."
+    },
+
+    {
+        id: 4,
+        name: "Luna Handbag",
+        category: "Fashion",
+        price: 64.99,
+        rating: 4.5,
+        badge: "",
+        image:
+            "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=800&q=80",
+
+        description:
+            "A fashionable handbag with a spacious interior and elegant design suitable for everyday use."
+    },
+
+    {
+        id: 5,
+        name: "Minimal Desk Lamp",
+        category: "Home",
+        price: 39.99,
+        rating: 4.4,
+        badge: "New",
+        image:
+            "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=800&q=80",
+
+        description:
+            "Minimal modern desk lamp perfect for your workspace, study table or bedside setup."
+    },
+
+    {
+        id: 6,
+        name: "Cozy Lounge Chair",
+        category: "Home",
+        price: 199.99,
+        rating: 4.9,
+        badge: "Top Rated",
+        image:
+            "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=800&q=80",
+
+        description:
+            "A comfortable and modern lounge chair designed to add style and relaxation to your living space."
+    },
+
+    {
+        id: 7,
+        name: "Vintage Sunglasses",
+        category: "Accessories",
+        price: 34.99,
+        rating: 4.3,
+        badge: "",
+        image:
+            "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=800&q=80",
+
+        description:
+            "Classic sunglasses featuring a timeless frame and stylish design for everyday outfits."
+    },
+
+    {
+        id: 8,
+        name: "Premium Wrist Watch",
+        category: "Accessories",
+        price: 159.99,
+        rating: 4.8,
+        badge: "Premium",
+        image:
+            "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=800&q=80",
+
+        description:
+            "Elegant wrist watch with a premium finish, clean dial and sophisticated everyday style."
+    }
+
+];
+
+
+// =========================
+// LOCAL STORAGE
+// =========================
+
+let cart =
+    JSON.parse(
+        localStorage.getItem("shopsphereCart")
+    ) || [];
+
+
+let wishlist =
+    JSON.parse(
+        localStorage.getItem("shopsphereWishlist")
+    ) || [];
+
+
+let recentlyViewed =
+    JSON.parse(
+        localStorage.getItem("shopsphereRecent")
+    ) || [];
+
+
+let appliedDiscount = 0;
+
+
+// =========================
+// GET ELEMENTS
+// =========================
+
+const productsContainer =
+    document.getElementById(
+        "productsContainer"
+    );
+
+
+const recentContainer =
+    document.getElementById(
+        "recentContainer"
+    );
+
+
+const cartSidebar =
+    document.getElementById(
+        "cartSidebar"
+    );
+
+
+const wishlistSidebar =
+    document.getElementById(
+        "wishlistSidebar"
+    );
+
+
+const overlay =
+    document.getElementById(
+        "overlay"
+    );
+
+
+const cartItems =
+    document.getElementById(
+        "cartItems"
+    );
+
+
+const wishlistItems =
+    document.getElementById(
+        "wishlistItems"
+    );
+
+
+const searchInput =
+    document.getElementById(
+        "searchInput"
+    );
+
+
+const priceFilter =
+    document.getElementById(
+        "priceFilter"
+    );
+
+
+const sortFilter =
+    document.getElementById(
+        "sortFilter"
+    );
+
+
+const categoryButtons =
+    document.querySelectorAll(
+        ".category-btn"
+    );
+
+
+let selectedCategory = "All";
+
+
+// =========================
+// DISPLAY PRODUCTS
+// =========================
+
+function displayProducts() {
+
+    let filteredProducts =
+        [...products];
+
+
+    // Search
+
+    const searchValue =
+        searchInput.value
+            .toLowerCase()
+            .trim();
+
+
+    if (searchValue !== "") {
+
+        filteredProducts =
+            filteredProducts.filter(
+                product =>
+
+                    product.name
+                        .toLowerCase()
+                        .includes(searchValue)
+
+                    ||
+
+                    product.category
+                        .toLowerCase()
+                        .includes(searchValue)
+            );
+
+    }
+
+
+    // Category
+
+    if (
+        selectedCategory !== "All"
+    ) {
+
+        filteredProducts =
+            filteredProducts.filter(
+                product =>
+                    product.category ===
+                    selectedCategory
+            );
+
+    }
+
+
+    // Price
+
+    if (
+        priceFilter.value !== "all"
+    ) {
+
+        const maximum =
+            Number(
+                priceFilter.value
+            );
+
+
+        filteredProducts =
+            filteredProducts.filter(
+                product =>
+                    product.price <=
+                    maximum
+            );
+
+    }
+
+
+    // Sort
+
+    if (
+        sortFilter.value ===
+        "price-low"
+    ) {
+
+        filteredProducts.sort(
+            (a, b) =>
+                a.price - b.price
+        );
+
+    }
+
+
+    if (
+        sortFilter.value ===
+        "price-high"
+    ) {
+
+        filteredProducts.sort(
+            (a, b) =>
+                b.price - a.price
+        );
+
+    }
+
+
+    if (
+        sortFilter.value ===
+        "rating"
+    ) {
+
+        filteredProducts.sort(
+            (a, b) =>
+                b.rating - a.rating
+        );
+
+    }
+
+
+    if (
+        sortFilter.value ===
+        "name"
+    ) {
+
+        filteredProducts.sort(
+            (a, b) =>
+                a.name.localeCompare(
+                    b.name
+                )
+        );
+
+    }
+
+
+    document.getElementById(
+        "productCount"
+    ).textContent =
+        filteredProducts.length;
+
+
+    productsContainer.innerHTML = "";
+
+
+    if (
+        filteredProducts.length === 0
+    ) {
+
+        productsContainer.innerHTML = `
+
+            <p class="empty-text">
+                No products match your search.
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+
+    filteredProducts.forEach(
+        product => {
+
+            productsContainer.appendChild(
+                createProductCard(product)
+            );
+
+        }
+    );
+
+}
+
+
+// =========================
+// CREATE PRODUCT CARD
+// =========================
+
+function createProductCard(product) {
+
+    const card =
+        document.createElement("div");
+
+
+    card.className =
+        "product-card";
+
+
+    const isFavorite =
+        wishlist.includes(
+            product.id
+        );
+
+
+    card.innerHTML = `
+
+        <div class="product-image">
+
+            <img
+                src="${product.image}"
+                alt="${product.name}"
+            >
+
+            ${
+                product.badge
+                    ?
+                    `
+                    <span class="product-badge">
+                        ${product.badge}
+                    </span>
+                    `
+                    :
+                    ""
+            }
+
+            <button
+                class="wishlist-heart
+                ${isFavorite ? "active" : ""}"
+
+                onclick="toggleWishlist(${product.id})"
+            >
+                ${isFavorite ? "❤️" : "🤍"}
+            </button>
+
+        </div>
+
+
+        <div class="product-content">
+
+            <span class="product-category">
+                ${product.category}
+            </span>
+
+            <h3>
+                ${product.name}
+            </h3>
+
+            <div class="rating">
+
+                ★★★★★
+
+                <span>
+                    ${product.rating}
+                </span>
+
+            </div>
+
+
+            <div class="product-bottom">
+
+                <span class="price">
+
+                    $${product.price.toFixed(2)}
+
+                </span>
+
+
+                <div class="product-actions">
+
+                    <button
+                        class="view-btn"
+                        onclick="viewProduct(${product.id})"
+                    >
+                        View
+                    </button>
+
+
+                    <button
+                        class="add-cart-btn"
+                        onclick="addToCart(${product.id})"
+                    >
+                        🛒
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    return card;
+
+}
+
+
+// =========================
+// CATEGORY FILTER
+// =========================
+
+categoryButtons.forEach(
+    button => {
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                categoryButtons.forEach(
+                    btn =>
+                        btn.classList.remove(
+                            "active"
+                        )
+                );
+
+
+                this.classList.add(
+                    "active"
+                );
+
+
+                selectedCategory =
+                    this.dataset.category;
+
+
+                displayProducts();
+
+            }
+        );
+
+    }
+);
+
+
+// =========================
+// SEARCH / FILTER EVENTS
+// =========================
+
+searchInput.addEventListener(
+    "input",
+    displayProducts
+);
+
+
+priceFilter.addEventListener(
+    "change",
+    displayProducts
+);
+
+
+sortFilter.addEventListener(
+    "change",
+    displayProducts
+);
+
+
+// =========================
+// CLEAR FILTERS
+// =========================
+
+document
+    .getElementById(
+        "clearFiltersBtn"
+    )
+    .addEventListener(
+        "click",
+        function () {
+
+            searchInput.value = "";
+
+            priceFilter.value =
+                "all";
+
+            sortFilter.value =
+                "default";
+
+            selectedCategory =
+                "All";
+
+
+            categoryButtons.forEach(
+                btn =>
+                    btn.classList.remove(
+                        "active"
+                    )
+            );
+
+
+            categoryButtons[0]
+                .classList.add(
+                    "active"
+                );
+
+
+            displayProducts();
+
+        }
+    );
+
+
+// =========================
+// ADD TO CART
+// =========================
+
+function addToCart(id) {
+
+    const product =
+        products.find(
+            product =>
+                product.id === id
+        );
+
+
+    const existingProduct =
+        cart.find(
+            item =>
+                item.id === id
+        );
+
+
+    if (existingProduct) {
+
+        existingProduct.quantity++;
+
+    } else {
+
+        cart.push({
+
+            id: product.id,
+
+            quantity: 1
+
+        });
+
+    }
+
+
+    saveCart();
+
+    updateCart();
+
+    showToast(
+        product.name +
+        " added to cart"
+    );
+
+}
+
+
+// =========================
+// UPDATE CART
+// =========================
+
+function updateCart() {
+
+    cartItems.innerHTML = "";
+
+
+    let totalQuantity = 0;
+
+
+    if (cart.length === 0) {
+
+        cartItems.innerHTML = `
+
+            <p class="empty-text">
+                Your cart is empty.
+            </p>
+
+        `;
+
+    }
+
+
+    cart.forEach(
+        item => {
+
+            const product =
+                products.find(
+                    product =>
+                        product.id ===
+                        item.id
+                );
+
+
+            totalQuantity +=
+                item.quantity;
+
+
+            const cartItem =
+                document.createElement(
+                    "div"
+                );
+
+
+            cartItem.className =
+                "cart-item";
+
+
+            cartItem.innerHTML = `
+
+                <img
+                    src="${product.image}"
+                    alt="${product.name}"
+                >
+
+
+                <div class="cart-item-info">
+
+                    <h4>
+                        ${product.name}
+                    </h4>
+
+                    <p>
+                        $${product.price.toFixed(2)}
+                    </p>
+
+
+                    <div class="quantity">
+
+                        <button
+                            onclick="changeQuantity(${product.id}, -1)"
+                        >
+                            -
+                        </button>
+
+
+                        <span>
+                            ${item.quantity}
+                        </span>
+
+
+                        <button
+                            onclick="changeQuantity(${product.id}, 1)"
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="remove-item"
+                    onclick="removeFromCart(${product.id})"
+                >
+                    🗑
+                </button>
+
+            `;
+
+
+            cartItems.appendChild(
+                cartItem
+            );
+
+        }
+    );
+
+
+    document.getElementById(
+        "cartCount"
+    ).textContent =
+        totalQuantity;
+
+
+    document.getElementById(
+        "cartItemText"
+    ).textContent =
+        totalQuantity +
+        (
+            totalQuantity === 1
+                ?
+                " item"
+                :
+                " items"
+        );
+
+
+    updateTotals();
+
+}
+
+
+// =========================
+// CHANGE QUANTITY
+// =========================
+
+function changeQuantity(
+    id,
+    amount
+) {
+
+    const item =
+        cart.find(
+            item =>
+                item.id === id
+        );
+
+
+    item.quantity += amount;
+
+
+    if (
+        item.quantity <= 0
+    ) {
+
+        removeFromCart(id);
+
+        return;
+
+    }
+
+
+    saveCart();
+
+    updateCart();
+
+}
+
+
+// =========================
+// REMOVE FROM CART
+// =========================
+
+function removeFromCart(id) {
+
+    cart =
+        cart.filter(
+            item =>
+                item.id !== id
+        );
+
+
+    saveCart();
+
+    updateCart();
+
+    showToast(
+        "Product removed from cart"
+    );
+
+}
+
+
+// =========================
+// TOTALS
+// =========================
+
+function calculateSubtotal() {
+
+    return cart.reduce(
+        (total, item) => {
+
+            const product =
+                products.find(
+                    product =>
+                        product.id ===
+                        item.id
+                );
+
+
+            return total +
+                (
+                    product.price *
+                    item.quantity
+                );
+
+        },
+        0
+    );
+
+}
+
+
+function updateTotals() {
+
+    const subtotal =
+        calculateSubtotal();
+
+
+    const discount =
+        subtotal *
+        appliedDiscount;
+
+
+    const total =
+        subtotal -
+        discount;
+
+
+    document.getElementById(
+        "subtotal"
+    ).textContent =
+        "$" +
+        subtotal.toFixed(2);
+
+
+    document.getElementById(
+        "discountAmount"
+    ).textContent =
+        "-$" +
+        discount.toFixed(2);
+
+
+    document.getElementById(
+        "cartTotal"
+    ).textContent =
+        "$" +
+        total.toFixed(2);
+
+}
+
+
+// =========================
+// COUPON
+// =========================
+
+document
+    .getElementById(
+        "applyCouponBtn"
+    )
+    .addEventListener(
+        "click",
+        function () {
+
+            const coupon =
+                document
+                    .getElementById(
+                        "couponInput"
+                    )
+                    .value
+                    .trim()
+                    .toUpperCase();
+
+
+            const message =
+                document.getElementById(
+                    "couponMessage"
+                );
+
+
+            if (
+                coupon ===
+                "SAVE10"
+            ) {
+
+                appliedDiscount =
+                    0.10;
+
+
+                message.textContent =
+                    "✓ 10% discount applied!";
+
+
+                message.style.color =
+                    "#16a34a";
+
+            }
+
+            else if (
+                coupon ===
+                "SHOP20"
+            ) {
+
+                appliedDiscount =
+                    0.20;
+
+
+                message.textContent =
+                    "✓ 20% discount applied!";
+
+
+                message.style.color =
+                    "#16a34a";
+
+            }
+
+            else {
+
+                appliedDiscount =
+                    0;
+
+
+                message.textContent =
+                    "Invalid coupon code.";
+
+
+                message.style.color =
+                    "#dc2626";
+
+            }
+
+
+            updateTotals();
+
+        }
+    );
+
+
+// =========================
+// CART SIDEBAR
+// =========================
+
+document
+    .getElementById(
+        "cartBtn"
+    )
+    .addEventListener(
+        "click",
+        function () {
+
+            closeAllSidebars();
+
+            cartSidebar.classList.add(
+                "show"
+            );
+
+            overlay.classList.add(
+                "show"
+            );
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "closeCartBtn"
+    )
+    .addEventListener(
+        "click",
+        closeAllSidebars
+    );
+
+
+overlay.addEventListener(
+    "click",
+    closeAllSidebars
+);
+
+
+function closeAllSidebars() {
+
+    cartSidebar.classList.remove(
+        "show"
+    );
+
+
+    wishlistSidebar.classList.remove(
+        "show"
+    );
+
+
+    overlay.classList.remove(
+        "show"
+    );
+
+}
+
+
+// =========================
+// WISHLIST
+// =========================
+
+function toggleWishlist(id) {
+
+    if (
+        wishlist.includes(id)
+    ) {
+
+        wishlist =
+            wishlist.filter(
+                productId =>
+                    productId !== id
+            );
+
+
+        showToast(
+            "Removed from wishlist"
+        );
+
+    } else {
+
+        wishlist.push(id);
+
+
+        showToast(
+            "Added to wishlist"
+        );
+
+    }
+
+
+    localStorage.setItem(
+        "shopsphereWishlist",
+        JSON.stringify(
+            wishlist
+        )
+    );
+
+
+    updateWishlist();
+
+    displayProducts();
+
+}
+
+
+// =========================
+// UPDATE WISHLIST
+// =========================
+
+function updateWishlist() {
+
+    document.getElementById(
+        "wishlistCount"
+    ).textContent =
+        wishlist.length;
+
+
+    wishlistItems.innerHTML = "";
+
+
+    if (
+        wishlist.length === 0
+    ) {
+
+        wishlistItems.innerHTML = `
+
+            <p class="empty-text">
+                Your wishlist is empty.
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+
+    wishlist.forEach(
+        id => {
+
+            const product =
+                products.find(
+                    product =>
+                        product.id === id
+                );
+
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+
+            item.className =
+                "cart-item";
+
+
+            item.innerHTML = `
+
+                <img
+                    src="${product.image}"
+                    alt="${product.name}"
+                >
+
+
+                <div class="cart-item-info">
+
+                    <h4>
+                        ${product.name}
+                    </h4>
+
+                    <p>
+                        $${product.price.toFixed(2)}
+                    </p>
+
+
+                    <button
+                        class="add-cart-btn"
+                        onclick="addToCart(${product.id})"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+
+                <button
+                    class="remove-item"
+                    onclick="toggleWishlist(${product.id})"
+                >
+                    🗑
+                </button>
+
+            `;
+
+
+            wishlistItems.appendChild(
+                item
+            );
+
+        }
+    );
+
+}
+
+
+// =========================
+// WISHLIST SIDEBAR
+// =========================
+
+document
+    .getElementById(
+        "wishlistBtn"
+    )
+    .addEventListener(
+        "click",
+        function () {
+
+            closeAllSidebars();
+
+
+            wishlistSidebar
+                .classList.add(
+                    "show"
+                );
+
+
+            overlay.classList.add(
+                "show"
+            );
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "closeWishlistBtn"
+    )
+    .addEventListener(
+        "click",
+        closeAllSidebars
+    );
+
+
+// =========================
+// PRODUCT DETAILS
+// =========================
+
+function viewProduct(id) {
+
+    const product =
+        products.find(
+            product =>
+                product.id === id
+        );
+
+
+    addRecentlyViewed(id);
+
+
+    document.getElementById(
+        "productDetails"
+    ).innerHTML = `
+
+        <div class="product-details-layout">
+
+            <img
+                src="${product.image}"
+                alt="${product.name}"
+            >
+
+
+            <div class="product-details-text">
+
+                <span class="product-category">
+                    ${product.category}
+                </span>
+
+                <h2>
+                    ${product.name}
+                </h2>
+
+                <div class="rating">
+
+                    ★★★★★
+
+                    <span>
+                        ${product.rating} / 5
+                    </span>
+
+                </div>
+
+
+                <p class="product-description">
+
+                    ${product.description}
+
+                </p>
+
+
+                <div class="details-price">
+
+                    $${product.price.toFixed(2)}
+
+                </div>
+
+
+                <button
+                    class="modal-cart-btn"
+                    onclick="addToCart(${product.id})"
+                >
+
+                    🛒 Add to Cart
+
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    document.getElementById(
+        "productModal"
+    ).classList.add(
+        "show"
+    );
+
+}
+
+
+// =========================
+// CLOSE PRODUCT MODAL
+// =========================
+
+document
+    .getElementById(
+        "closeProductModal"
+    )
+    .addEventListener(
+        "click",
+        function () {
+
+            document
+                .getElementById(
+                    "productModal"
+                )
+                .classList.remove(
+                    "show"
+                );
+
+        }
+    );
+
+
+// =========================
+// RECENTLY VIEWED
+// =========================
+
+function addRecentlyViewed(id) {
+
+    recentlyViewed =
+        recentlyViewed.filter(
+            productId =>
+                productId !== id
+        );
+
+
+    recentlyViewed.unshift(
+        id
+    );
+
+
+    recentlyViewed =
+        recentlyViewed.slice(
+            0,
+            4
+        );
+
+
+    localStorage.setItem(
+        "shopsphereRecent",
+        JSON.stringify(
+            recentlyViewed
+        )
+    );
+
+
+    displayRecentlyViewed();
+
+}
+
+
+// =========================
+// DISPLAY RECENT
+// =========================
+
+function displayRecentlyViewed() {
+
+    recentContainer.innerHTML =
+        "";
+
+
+    if (
+        recentlyViewed.length === 0
+    ) {
+
+        recentContainer.innerHTML = `
+
+            <p class="empty-text">
+                You haven't viewed any products yet.
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+
+    recentlyViewed.forEach(
+        id => {
+
+            const product =
+                products.find(
+                    product =>
+                        product.id === id
+                );
+
+
+            if (product) {
+
+                recentContainer
+                    .appendChild(
+                        createProductCard(
+                            product
+                        )
+                    );
+
+            }
+
+        }
+    );
+
+}
+
+
+// =========================
+// CHECKOUT
+// =========================
+
+document
+    .getElementById(
+        "checkoutBtn"
+    )
+    .addEventListener(
+        "click",
+        function () {
+
+            if (
+                cart.length === 0
+            ) {
+
+                showToast(
+                    "Your cart is empty"
+                );
+
+                return;
+
+            }
+
+
+            closeAllSidebars();
+
+
+            displayCheckoutSummary();
+
+
+            document.getElementById(
+                "checkoutModal"
+            ).classList.add(
+                "show"
+            );
+
+        }
+    );
+
+
+// =========================
+// CHECKOUT SUMMARY
+// =========================
+
+function displayCheckoutSummary() {
+
+    const container =
+        document.getElementById(
+            "checkoutItems"
+        );
+
+
+    container.innerHTML = "";
+
+
+    cart.forEach(
+        item => {
+
+            const product =
+                products.find(
+                    product =>
+                        product.id ===
+                        item.id
+                );
+
+
+            container.innerHTML += `
+
+                <div class="checkout-product">
+
+                    <span>
+                        ${product.name}
+                        × ${item.quantity}
+                    </span>
+
+                    <strong>
+
+                        $${(
+                            product.price *
+                            item.quantity
+                        ).toFixed(2)}
+
+                    </strong>
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    const subtotal =
+        calculateSubtotal();
+
+
+    const total =
+        subtotal -
+        (
+            subtotal *
+            appliedDiscount
+        );
+
+
+    document.getElementById(
+        "checkoutTotal"
+    ).textContent =
+        "$" +
+        total.toFixed(2);
+
+}
+
+
+// =========================
+// CLOSE CHECKOUT
+// =========================
+
+document
+    .getElementById(
+        "closeCheckoutBtn"
+    )
+    .addEventListener(
+        "click",
+        function () {
+
+            document
+                .getElementById(
+                    "checkoutModal"
+                )
+                .classList.remove(
+                    "show"
+                );
+
+        }
+    );
+
+
+// =========================
+// PLACE ORDER
+// =========================
+
+document
+    .getElementById(
+        "checkoutForm"
+    )
+    .addEventListener(
+        "submit",
+        function (event) {
+
+            event.preventDefault();
+
+
+            document
+                .getElementById(
+                    "checkoutModal"
+                )
+                .classList.remove(
+                    "show"
+                );
+
+
+            document
+                .getElementById(
+                    "successModal"
+                )
+                .classList.add(
+                    "show"
+                );
+
+
+            cart = [];
+
+            appliedDiscount = 0;
+
+
+            saveCart();
+
+            updateCart();
+
+
+            this.reset();
+
+        }
+    );
+
+
+// =========================
+// CONTINUE SHOPPING
+// =========================
+
+document
+    .getElementById(
+        "continueShoppingBtn"
+    )
+    .addEventListener(
+        "click",
+        function () {
+
+            document
+                .getElementById(
+                    "successModal"
+                )
+                .classList.remove(
+                    "show"
+                );
+
+
+            window.location.hash =
+                "products";
+
+        }
+    );
+
+
+// =========================
+// DARK MODE
+// =========================
+
+const themeBtn =
+    document.getElementById(
+        "themeBtn"
+    );
+
+
+function loadTheme() {
+
+    const theme =
+        localStorage.getItem(
+            "shopsphereTheme"
+        );
+
+
+    if (
+        theme === "dark"
+    ) {
+
+        document.body
+            .classList.add(
+                "dark"
+            );
+
+
+        themeBtn.textContent =
+            "☀️";
+
+    }
+
+}
+
+
+themeBtn.addEventListener(
+    "click",
+    function () {
+
+        document.body
+            .classList.toggle(
+                "dark"
+            );
+
+
+        const darkMode =
+            document.body
+                .classList
+                .contains(
+                    "dark"
+                );
+
+
+        localStorage.setItem(
+            "shopsphereTheme",
+            darkMode
+                ?
+                "dark"
+                :
+                "light"
+        );
+
+
+        themeBtn.textContent =
+            darkMode
+                ?
+                "☀️"
+                :
+                "🌙";
+
+    }
+);
+
+
+// =========================
+// NEWSLETTER
+// =========================
+
+document
+    .getElementById(
+        "newsletterForm"
+    )
+    .addEventListener(
+        "submit",
+        function (event) {
+
+            event.preventDefault();
+
+
+            showToast(
+                "Thanks for subscribing!"
+            );
+
+
+            this.reset();
+
+        }
+    );
+
+
+// =========================
+// SAVE CART
+// =========================
+
+function saveCart() {
+
+    localStorage.setItem(
+        "shopsphereCart",
+        JSON.stringify(
+            cart
+        )
+    );
+
+}
+
+
+// =========================
+// TOAST
+// =========================
+
+let toastTimer;
+
+
+function showToast(message) {
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+
+    toast.textContent =
+        message;
+
+
+    toast.classList.add(
+        "show"
+    );
+
+
+    clearTimeout(
+        toastTimer
+    );
+
+
+    toastTimer =
+        setTimeout(
+            function () {
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },
+            2200
+        );
+
+}
+
+
+// =========================
+// INITIAL LOAD
+// =========================
+
+displayProducts();
+
+updateCart();
+
+updateWishlist();
+
+displayRecentlyViewed();
+
+loadTheme();
